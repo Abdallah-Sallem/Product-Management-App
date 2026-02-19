@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Shop Cart</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+            padding: 30px;
+        }
+
+        h2, h3 {
+            color: #2c3e50;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        form input {
+            padding: 8px;
+            margin: 5px 0;
+            width: 200px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th {
+            background: #3498db;
+            color: white;
+            padding: 10px;
+        }
+
+        table td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .action-btn {
+            padding: 5px 10px;
+            border-radius: 4px;
+            text-decoration: none;
+            color: white;
+            font-size: 13px;
+        }
+
+        .delete {
+            background: #e74c3c;
+        }
+
+        .delete:hover {
+            background: #c0392b;
+        }
+
+        .edit {
+            background: #f39c12;
+        }
+
+        .edit:hover {
+            background: #d68910;
+        }
+
+        .total-box {
+            margin-top: 20px;
+            padding: 15px;
+            background: #ecf0f1;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        hr {
+            margin: 30px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Ajouter Produit</h2>
+    <form method="post" action="/add">
+        <input name="name" placeholder="Nom du produit"><br>
+        <input name="quantity" placeholder="Quantité"><br>
+        <input name="price" placeholder="Prix"><br>
+        <button type="submit">Ajouter</button>
+    </form>
+
+    <hr>
+
+    <h2>Panier</h2>
+
+    <table>
+        <tr>
+            <th>#</th>
+            <th>Nom</th>
+            <th>Quantité</th>
+            <th>Prix</th>
+            <th>Total</th>
+            <th>Actions</th>
+        </tr>
+
+        <tr th:each="p, stat : ${products}">
+            <td th:text="${stat.index}"></td>
+            <td th:text="${p.name}"></td>
+            <td th:text="${p.quantity}"></td>
+            <td th:text="${p.price}"></td>
+            <td th:text="${p.total}"></td>
+
+            <td>
+                <a class="action-btn delete"
+                   th:href="@{/delete/{i}(i=${stat.index})}">
+                    Supprimer
+                </a>
+
+                <a class="action-btn edit"
+                   th:href="@{/edit/{i}(i=${stat.index})}">
+                    Modifier
+                </a>
+            </td>
+        </tr>
+    </table>
+
+    <div class="total-box">
+        Total panier : <span th:text="${total}"></span>
+    </div>
+
+    <div th:if="${productToEdit != null}">
+        <hr>
+        <h3>Modifier produit</h3>
+
+        <form method="post" action="/update">
+            <input type="hidden" name="index" th:value="${editIndex}">
+
+            <input name="name" th:value="${productToEdit.name}"><br>
+            <input name="quantity" th:value="${productToEdit.quantity}"><br>
+            <input name="price" th:value="${productToEdit.price}"><br>
+
+            <button type="submit">Mettre à jour</button>
+        </form>
+    </div>
+
+</div>
+
+</body>
+</html>
